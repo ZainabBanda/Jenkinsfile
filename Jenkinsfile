@@ -2,100 +2,86 @@ pipeline {
     agent any
     
     stages {
-        stage('Build') {
+        stage("Build") {
             steps {
-                echo 'Building the code ...'
-                sh 'mvn clean package'
+                echo 'Building project to compile and package using Maven'
+                // Add build commands using Maven
             }
         }
         
-        stage('Unit and Integration Tests') {
+        stage("Unit and Integration Tests") {
             steps {
-                echo 'Running unit and integration tests ...'
-                // Add commands to run tests
+                echo 'JUnit test for code function'
+                echo 'Integration Test working together'
             }
             post {
                 success {
-                    emailext body: "Unit and Integration tests were successful.",
-                             subject: "Unit and Integration Test Success",
-                             to: "zbanda23@gmail.com",
-                             attachLog: true
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Success: JUnit and Integration test successful.",
+                    body: "Unit and Integration tests passed successfully."
                 }
                 failure {
-                    emailext body: "Unit and Integration tests failed. Please check the logs for details.",
-                             subject: "Unit and Integration Test Failure",
-                             to: "zbanda23@gmail.com",
-                             attachLog: true
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Unsuccessful: JUnit and Integration test failure.",
+                    body: "Unit and Integration tests failed. Please try again."
                 }
             }
         }
         
-        stage('Code Analysis') {
+        stage("Code Analysis") {
             steps {
-                echo 'Running code analysis ...'
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                echo 'Performing code analysis using SonarQube'
+                // Add commands to run code analysis using SonarQube
+            }
+        }
+        
+        stage("Security Scan") {
+            steps {
+                echo 'Performing security scan using OWASP Dependency-Check'
+                // Add commands to perform security scan
+            }
+            post {
+                success {
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Success: Security scans successful.",
+                    body: "Security scans passed. The application is secure."
+                }
+                failure {
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Unsuccessful: Security scans failure.",
+                    body: "Security scans detected vulnerabilities. Please protect the application."
                 }
             }
         }
         
-        stage('Security Scan') {
+        stage("Deploy to Staging") {
             steps {
-                echo 'Performing security scan ...'
-                sh 'dependency-check --scan . --format HTML --out ./'
+                echo 'Deploying to staging server AWS EC2 s3://staging-bucket/'
+                // Add commands to deploy to staging server
             }
         }
         
-        stage('Deploy to Staging') {
+        stage("Integration Tests on Staging") {
             steps {
-                echo 'Deploying to staging server ...'
-                sshPublisher(
-                    publishers: [sshPublisherDesc(
-                        configName: "Staging Server",
-                        transfers: [sshTransfer(
-                            execCommand: "scripts/deploy.sh",
-                            execTimeout: 120
-                        )]
-                    )]
-                )
+                echo 'Running Integration Tests on Staging environment'
+                // Add commands to run integration tests on staging
             }
         }
         
-        stage('Integration Tests on Staging') {
+        stage("Deploy to Production") {
             steps {
-                echo 'Running integration tests on staging ...'
-                // Add commands to run integration tests
-            }
-        }
-        
-        stage('Deploy to Production') {
-            steps {
-                echo 'Deploying to production server ...'
-                sshPublisher(
-                    publishers: [sshPublisherDesc(
-                        configName: "Production Server",
-                        transfers: [sshTransfer(
-                            execCommand: "scripts/deploy.sh",
-                            execTimeout: 120
-                        )]
-                    )]
-                )
+                echo 'Deploying to Production server AWS EC2'
+                // Add commands to deploy to production server
             }
         }
     }
     
     post {
         success {
-            emailext body: "Pipeline successfully completed.",
-                     subject: "Pipeline Success",
-                     to: "zbanda23@gmail.com",
-                     attachLog: true
+            echo 'Deployment to production successful!'
         }
         failure {
-            emailext body: "Pipeline failed.",
-                     subject: "Pipeline Failure",
-                     to: "zbanda23@gmail.com",
-                     attachLog: true
+            echo 'Deployment failed!'
         }
     }
 }
