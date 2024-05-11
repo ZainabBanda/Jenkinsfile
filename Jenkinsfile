@@ -9,13 +9,15 @@ pipeline {
             post {
                 success {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Build was successful!"
+                    subject: "Build Status: Success",
+                    body: "Build was successful!",
+                    attachLog: true
                 }
                 failure {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Build failed! Please check the logs for details."
+                    subject: "Build Status: Failure",
+                    body: "Build failed! Please check the logs for details.",
+                    attachLog: true
                 }
             }
         }
@@ -27,34 +29,15 @@ pipeline {
             post {
                 success {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Success: Unit and Integration test successful.",
-                    body: "Stage is working.",
+                    subject: "Unit and Integration Tests: Success",
+                    body: "Unit and integration tests passed!",
                     attachLog: true
                 }
                 failure {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Unsuccess: Unit and Integration test failure.",
-                    body: "Stage is not working.",
+                    subject: "Unit and Integration Tests: Failure",
+                    body: "Unit and integration tests failed!",
                     attachLog: true
-                }
-            }
-            }
-            post {
-                success {
-                    emailext(
-                        to: "zbanda23@gmail.com",
-                        subject: "Test Status Email",
-                        body: "Unit and integration tests passed!",
-                        attachLog: true
-                    )
-                }
-                failure {
-                    emailext(
-                        to: "zbanda23@gmail.com",
-                        subject: "Test Status Email",
-                        body: "Unit and integration tests failed!",
-                        attachLog: true
-                    )
                 }
             }
         }
@@ -72,29 +55,32 @@ pipeline {
             post {
                 success {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Security scans successful.",
-                    body: "Scan is secure.",
+                    subject: "Security Scan: Success",
+                    body: "Security scan completed successfully!",
                     attachLog: true
                 }
                 failure {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Unsuccess: Security scans failure.",
-                    body: "Scan is not secure.",
+                    subject: "Security Scan: Failure",
+                    body: "Security scan failed! Please check the logs for details.",
                     attachLog: true
                 }
             }
+        }
     }
     
     post {
         success {
             mail to: "zbanda23@gmail.com",
-            subject: "Pipeline Status Email",
-            body: "Pipeline completed successfully!"
+            subject: "Pipeline Status: Success",
+            body: "Pipeline completed successfully!",
+            attachLog: true
         }
         failure {
             mail to: "zbanda23@gmail.com",
-            subject: "Pipeline Status Email",
-            body: "Pipeline failed! Please check the logs for details."
+            subject: "Pipeline Status: Failure",
+            body: "Pipeline failed! Please check the logs for details.",
+            attachLog: true
         }
     }
 }
