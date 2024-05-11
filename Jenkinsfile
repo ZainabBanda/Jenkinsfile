@@ -1,96 +1,65 @@
 pipeline {
     agent any
+    
     stages {
         stage('Build') {
             steps {
-                echo "Building ..." 
-                // Add build steps here
-            }
-            post {
-                success {
-                    mail to: "zbanda23@gmail.com",
-                    subject: "Build Status: Success",
-                    body: "Build was successful!"
-                }
-                failure {
-                    mail to: "zbanda23@gmail.com",
-                    subject: "Build Status: Failure",
-                    body: "Build failed! Please check the logs for details."
-                }
+                // Use Maven to build the code
+                sh 'mvn clean package'
             }
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo "Running unit and integration tests ..."
-                // Add test execution steps here
-            }
-            post {
-                success {
-                    emailext (
-                        to: "zbanda23@gmail.com",
-                        subject: "Unit and Integration Tests: Success",
-                        body: "Unit and integration tests passed!",
-                        attachLog: true
-                    )
-                }
-                failure {
-                    emailext (
-                        to: "zbanda23@gmail.com",
-                        subject: "Unit and Integration Tests: Failure",
-                        body: "Unit and integration tests failed!",
-                        attachLog: true
-                    )
-                }
+                // Run unit tests
+                sh 'mvn test'
+                // Run integration tests using Selenium
+                // (Assuming Selenium is configured and tests are available)
             }
         }
         stage('Code Analysis') {
             steps {
-                echo "Performing code analysis ..." 
-                // Add code analysis steps here
+                // Integrate SonarQube for code analysis
+                // (Assuming SonarQube is configured)
             }
         }
         stage('Security Scan') {
             steps {
-                echo "Performing security scan ..."
-                // Add security scan steps here
+                // Perform security scan using OWASP Dependency-Check
+                // (Assuming Dependency-Check is configured)
             }
-            post {
-                success {
-                    emailext (
-                        to: "zbanda23@gmail.com",
-                        subject: "Security Scan: Success",
-                        body: "Security scan completed successfully!",
-                        attachLog: true
-                    )
-                }
-                failure {
-                    emailext (
-                        to: "zbanda23@gmail.com",
-                        subject: "Security Scan: Failure",
-                        body: "Security scan failed! Please check the logs for details.",
-                        attachLog: true
-                    )
-                }
+        }
+        stage('Deploy to Staging') {
+            steps {
+                // Deploy application to staging server using Jenkins SSH plugin
+                // (Assuming SSH plugin is configured)
+            }
+        }
+        stage('Integration Tests on Staging') {
+            steps {
+                // Run integration tests on staging environment using Selenium
+                // (Assuming Selenium is configured)
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                // Deploy application to production server using Jenkins SSH plugin
+                // (Assuming SSH plugin is configured)
             }
         }
     }
     
     post {
         success {
-            emailext (
-                to: "zbanda23@gmail.com",
-                subject: "Pipeline Status: Success",
-                body: "Pipeline completed successfully!",
-                attachLog: true
-            )
+            // Send email notification for successful build
+            emailext body: 'The pipeline has been successfully executed.',
+                subject: 'Pipeline Successful',
+                to: 'zbanda23@gmail.com'
         }
         failure {
-            emailext (
-                to: "zbanda23@gmail.com",
-                subject: "Pipeline Status: Failure",
-                body: "Pipeline failed! Please check the logs for details.",
-                attachLog: true
-            )
+            // Send email notification for failed build
+            emailext body: 'The pipeline has failed.',
+                subject: 'Pipeline Failed',
+                to: 'zbanda23@gmail.com'
         }
     }
 }
