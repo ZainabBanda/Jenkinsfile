@@ -21,8 +21,23 @@ pipeline {
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo "Running unit and integration tests ..." 
+                echo "Running unit and integration tests ..."
                 // Add test execution steps here
+            }
+            post {
+                success {
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Success: Unit and Integration test successful.",
+                    body: "Stage is working.",
+                    attachLog: true
+                }
+                failure {
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Unsuccess: Unit and Integration test failure.",
+                    body: "Stage is not working.",
+                    attachLog: true
+                }
+            }
             }
             post {
                 success {
@@ -37,7 +52,7 @@ pipeline {
                     emailext(
                         to: "zbanda23@gmail.com",
                         subject: "Test Status Email",
-                        body: "Unit and integration tests failed! Please check the logs for details.",
+                        body: "Unit and integration tests failed!",
                         attachLog: true
                     )
                 }
@@ -51,29 +66,23 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                echo "Performing security scan ..." 
+                echo "Performing security scan ..."
                 // Add security scan steps here
             }
             post {
                 success {
-                    emailext(
-                        to: "zbanda23@gmail.com",
-                        subject: "Security Scan Status Email",
-                        body: "Security scan passed!",
-                        attachLog: true
-                    )
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Security scans successful.",
+                    body: "Scan is secure.",
+                    attachLog: true
                 }
                 failure {
-                    emailext(
-                        to: "zbanda23@gmail.com",
-                        subject: "Security Scan Status Email",
-                        body: "Security scan failed! Please check the logs for details.",
-                        attachLog: true
-                    )
+                    mail to: "zbanda23@gmail.com",
+                    subject: "Unsuccess: Security scans failure.",
+                    body: "Scan is not secure.",
+                    attachLog: true
                 }
             }
-        }
-        // Remaining stages omitted for brevity
     }
     
     post {
