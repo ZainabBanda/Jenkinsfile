@@ -84,7 +84,8 @@ pipeline {
             echo 'Deployment failed!'
         }
     }
-     post {
+}
+post {
         success {
             emailext body: "Pipeline successfully completed.",
                      subject: "Pipeline Success",
@@ -97,4 +98,3 @@ pipeline {
                      to: "zbanda23@gmail.com",
                      attachLog: true
         }
-}
