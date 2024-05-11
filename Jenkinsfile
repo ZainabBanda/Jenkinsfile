@@ -24,6 +24,24 @@ pipeline {
                 echo "Running unit and integration tests ..." 
                 // Add test execution steps here
             }
+            post {
+                success {
+                    emailext(
+                        to: "zbanda23@gmail.com",
+                        subject: "Test Status Email",
+                        body: "Unit and integration tests passed!",
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        to: "zbanda23@gmail.com",
+                        subject: "Test Status Email",
+                        body: "Unit and integration tests failed! Please check the logs for details.",
+                        attachLog: true
+                    )
+                }
+            }
         }
         stage('Code Analysis') {
             steps {
@@ -33,36 +51,29 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                echo "Performing security scan ..."
+                echo "Performing security scan ..." 
                 // Add security scan steps here
             }
             post {
                 success {
-                    sendSecurityScanNotification('Security Scan', 'success')
+                    emailext(
+                        to: "zbanda23@gmail.com",
+                        subject: "Security Scan Status Email",
+                        body: "Security scan passed!",
+                        attachLog: true
+                    )
                 }
                 failure {
-                    sendSecurityScanNotification('Security Scan', 'failure')
+                    emailext(
+                        to: "zbanda23@gmail.com",
+                        subject: "Security Scan Status Email",
+                        body: "Security scan failed! Please check the logs for details.",
+                        attachLog: true
+                    )
                 }
             }
         }
-        stage('Deploy to Staging') {
-            steps {
-                echo "Deploying to staging ..." 
-                // Add deployment steps here
-            }
-        }
-        stage('Integration Tests on Staging') {
-            steps {
-                echo "Running integration tests on staging ..." 
-                // Add integration tests on staging steps here
-            }
-        }
-        stage('Deploy to Production') {
-            steps {
-                echo "Deploying to production ..." 
-                // Add deployment to production steps here
-            }
-        }
+        // Remaining stages omitted for brevity
     }
     
     post {
