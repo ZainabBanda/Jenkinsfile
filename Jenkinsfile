@@ -4,25 +4,25 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                echo 'Building project to compile and package using Maven'
+                echo 'Building code using Maven'
                 // Add build commands using Maven
             }
         }
         
         stage("Unit and Integration Tests") {
             steps {
-                echo 'JUnit test for code function'
+                echo 'Unit test for code function'
                 echo 'Integration Test working together'
             }
             post {
                 success {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Success: JUnit and Integration test successful.",
+                    subject: "Unit and Integration test successful.",
                     body: "Unit and Integration tests passed successfully."
                 }
                 failure {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Unsuccessful: JUnit and Integration test failure.",
+                    subject: "Unit and Integration test failure.",
                     body: "Unit and Integration tests failed. Please try again."
                 }
             }
@@ -37,27 +37,27 @@ pipeline {
         
         stage("Security Scan") {
             steps {
-                echo 'Performing security scan using OWASP Dependency-Check'
+                echo 'Performing security scan'
                 // Add commands to perform security scan
             }
             post {
                 success {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Success: Security scans successful.",
-                    body: "Security scans passed. The application is secure."
+                    subject: "Security scans successful.",
+                    body: "Security scans was successful."
                 }
                 failure {
                     mail to: "zbanda23@gmail.com",
-                    subject: "Unsuccessful: Security scans failure.",
-                    body: "Security scans detected vulnerabilities. Please protect the application."
+                    subject: "Security scans failure.",
+                    body: "Security scans failed."
                 }
             }
         }
         
         stage("Deploy to Staging") {
             steps {
-                echo 'Deploying to staging server AWS EC2 s3://staging-bucket/'
-                // Add commands to deploy to staging server
+                echo 'Deploying to staging'
+                
             }
         }
         
@@ -70,7 +70,7 @@ pipeline {
         
         stage("Deploy to Production") {
             steps {
-                echo 'Deploying to Production server AWS EC2'
+                echo 'Deploying to Production'
                 // Add commands to deploy to production server
             }
         }
