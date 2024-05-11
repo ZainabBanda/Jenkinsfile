@@ -33,8 +33,16 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                echo "Performing security scan ..." 
+                echo "Performing security scan ..."
                 // Add security scan steps here
+            }
+            post {
+                success {
+                    sendSecurityScanNotification('Security Scan', 'success')
+                }
+                failure {
+                    sendSecurityScanNotification('Security Scan', 'failure')
+                }
             }
         }
         stage('Deploy to Staging') {
